@@ -1,3 +1,5 @@
+'use client';
+
 import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"

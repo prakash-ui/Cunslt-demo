@@ -1,3 +1,10 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Polyfill __dirname in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 let userConfig = undefined;
 try {
   userConfig = await import('./v0-user-next.config');
@@ -8,24 +15,27 @@ try {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: true, // Useful for CI/CD but disable in development
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // Risky for production; use only temporarily
+    ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true, // Disables Next.js Image Optimization (useful for static exports)
-    domains: [], // Add domains if using external image URLs (e.g., ['supabase.co'])
+    unoptimized: true,
+    domains: [],
   },
   experimental: {
-    webpackBuildWorker: true, // Speeds up builds
-    parallelServerBuildTraces: true, // Improves build performance
-    parallelServerCompiles: true, // Enables parallel compilation
+    webpackBuildWorker: true,
+    parallelServerBuildTraces: true,
+    parallelServerCompiles: true,
   },
-  // Ensure Supabase environment variables are loaded
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  },
+  webpack(config) {
+    config.resolve.alias['@'] = path.resolve(__dirname);
+    return config;
   },
 };
 
