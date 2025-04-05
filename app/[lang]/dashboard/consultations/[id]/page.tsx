@@ -1,7 +1,6 @@
 import { Suspense } from "react"
 import { notFound, redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
-import { getCurrentUser } from "@/app/actions/auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ReviewPromptWrapper } from "@/components/reviews/review-prompt-wrapper"
 
@@ -126,5 +125,29 @@ export default async function ConsultationDetailsPage({ params }: ConsultationDe
       </Suspense>
     </div>
   );
+}
+async function getCurrentUser() {
+  const supabase = createClient();
+
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
+
+  if (error || !session) {
+    return null;
+  }
+
+  const { data: user, error: userError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", session.user.id)
+    .single();
+
+  if (userError || !user) {
+    return null;
+  }
+
+  return user;
 }
 

@@ -6,7 +6,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { respondToReview } from "@/app/actions/reviews"
+
 import { toast } from "@/hooks/use-toast"
 
 interface ReviewResponseFormProps {
@@ -80,5 +80,18 @@ export function ReviewResponseForm({ reviewId, existingResponse = "", onCancel }
       </div>
     </form>
   )
+}
+async function respondToReview(formData: FormData) {
+  const response = await fetch("/api/reviews/respond", {
+    method: "POST",
+    body: formData,
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || "Failed to submit response")
+  }
+
+  return await response.json()
 }
 

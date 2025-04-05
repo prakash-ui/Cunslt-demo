@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { AlertCircle, Calendar, Check, CreditCard } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import { createPaymentPlan, payInstallment } from "@/app/actions/installments"
+
 import { useToast } from "@/hooks/use-toast"
 import {
   Dialog,
@@ -413,5 +413,32 @@ export function InstallmentPlan({ bookingId, totalAmount, paymentPlan }: Install
       </CardContent>
     </Card>
   )
+}
+async function createPaymentPlan(formData: FormData) {
+  const response = await fetch("/api/payment-plans", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to create payment plan");
+  }
+
+  return await response.json();
+}
+
+async function payInstallment(formData: FormData) {
+  const response = await fetch("/api/pay-installment", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to pay installment");
+  }
+
+  return await response.json();
 }
 

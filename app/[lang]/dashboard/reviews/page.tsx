@@ -2,8 +2,8 @@ import { Suspense } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ReviewList } from "@/components/reviews/review-list"
-import { getClientReviews, getExpertReviews } from "@/app/actions/reviews"
-import { getCurrentUser } from "@/app/actions/auth"
+
+
 import { redirect } from "next/navigation"
 
 export const metadata = {
@@ -113,5 +113,31 @@ export default async function ReviewsPage() {
       </Suspense>
     </div>
   );
+}
+async function getClientReviews(userId: string) {
+  try {
+    const response = await fetch(`/api/reviews/client?userId=${userId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch client reviews");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching client reviews:", error);
+    return { reviews: [] };
+  }
+}
+async function getExpertReviews(userId: string) {
+  try {
+    const response = await fetch(`/api/reviews/expert?userId=${userId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch expert reviews");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching expert reviews:", error);
+    return { reviews: [] };
+  }
 }
 

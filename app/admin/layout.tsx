@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
 import { createClient } from "@/lib/supabase/server"
 import { AdminSidebar } from "@/components/admin/layout/admin-sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
@@ -39,5 +38,17 @@ export default async function AdminLayout({
       </SidebarInset>
     </SidebarProvider>
   )
+}
+async function getCurrentUser() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session || !session.user) {
+    return null;
+  }
+
+  return session.user;
 }
 

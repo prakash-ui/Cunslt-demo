@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
 import { createClient } from "@/lib/supabase/server"
 import { WithdrawalManagement } from "@/components/admin/withdrawal-management"
-import { getWithdrawalRequests } from "@/app/actions/wallet"
+
 
 export default async function AdminWithdrawalsPage() {
   const user = await getCurrentUser()
@@ -21,7 +20,7 @@ export default async function AdminWithdrawalsPage() {
   }
 
   try {
-    const withdrawalRequests = await getWithdrawalRequests()
+    const withdrawalRequests = await fetchWithdrawalRequests()
 
     return (
       <div className="container py-10">
@@ -39,5 +38,28 @@ export default async function AdminWithdrawalsPage() {
       </div>
     )
   }
+}
+async function fetchWithdrawalRequests() {
+  const supabase = createClient()
+  const { data, error } = await supabase.from("withdrawal_requests").select("*")
+
+  if (error) {
+    throw new Error("Failed to fetch withdrawal requests")
+  }
+
+  return data
+}
+
+async function getCurrentUser() {
+  const supabase = createClient()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session || !session.user) {
+    return null
+  }
+
+  return session.user
 }
 

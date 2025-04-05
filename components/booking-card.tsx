@@ -3,7 +3,7 @@ import Link from "next/link"
 import type { Booking } from "@/app/types"
 import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { joinConsultation } from "@/app/actions/bookings"
+
 
 interface BookingCardProps {
   booking: Booking
@@ -26,7 +26,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, showReviewButton = f
         <div>{/* Add any additional information or actions here */}</div>
         <div className="flex gap-2">
           {(booking.status === "confirmed" || booking.status === "in_progress") && (
-            <form action={joinConsultation}>
+            <form action={() => console.log("Joining consultation...")}>
               <input type="hidden" name="bookingId" value={booking.id} />
               <Button type="submit">Join Consultation</Button>
             </form>

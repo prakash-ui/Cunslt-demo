@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { createReviewResponse } from "@/app/actions/reviews"
+
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
@@ -87,5 +87,25 @@ export function ReviewResponseForm({ reviewId, onSuccess, onCancel }: ReviewResp
       </div>
     </form>
   )
+}
+async function createReviewResponse({ review_id, response }: { review_id: string; response: string }) {
+  try {
+    const res = await fetch("/api/review-responses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ review_id, response }),
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json()
+      return { error: errorData.message || "Failed to submit response" }
+    }
+
+    return await res.json()
+  } catch (error) {
+    return { error: "An unexpected error occurred while submitting the response" }
+  }
 }
 

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/hooks/use-auth"
 import { createClient } from "@/lib/supabase/client"
-import { getUnreadMessageCount } from "@/app/actions/messages"
+
 
 interface MainNavProps {
   className?: string
@@ -174,5 +174,19 @@ export function MainNav({ className }: MainNavProps) {
         ))}
     </nav>
   )
+}
+async function getUnreadMessageCount() {
+  const supabase = createClient();
+  const { data, error, count } = await supabase
+    .from("messages")
+    .select("*", { count: "exact" })
+    .eq("is_read", false);
+
+  if (error) {
+    console.error("Error fetching unread message count:", error);
+    return { count: 0 };
+  }
+
+  return { count: count || 0 };
 }
 

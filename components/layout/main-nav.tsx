@@ -117,7 +117,7 @@ export function MainNav({ user, userProfile }: MainNavProps) {
                   )}
                 >
                   Messages
-                  {user && <UnreadBadge userId={user.id} className="absolute -top-1 -right-1" />}
+                    {/* {user && <UnreadBadge userId={user.id} className="absolute -top-1 -right-1" />} */}
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -134,7 +134,15 @@ export function MainNav({ user, userProfile }: MainNavProps) {
                 </Button>
               </Link>
             )}
-            <UserNav user={user} userProfile={userProfile} />
+            <UserNav
+              user={{
+                id: user.id,
+                name: user.user_metadata?.name || "Unknown",
+                email: user.email,
+                image: user.user_metadata?.avatar_url || "/default-avatar.png",
+                role: userProfile?.role || "user",
+              }}
+            />
           </>
         ) : (
           <>

@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { formatCurrency } from "@/lib/utils"
-import { requestWithdrawal } from "@/app/actions/wallet"
+
 import { useToast } from "@/hooks/use-toast"
 import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
@@ -334,5 +334,18 @@ export function WalletDashboard({ wallet, transactions, withdrawalRequests }: Wa
       </Tabs>
     </div>
   )
+}
+async function requestWithdrawal(formData: FormData) {
+  const response = await fetch("/api/withdrawals", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to request withdrawal");
+  }
+
+  return await response.json();
 }
 

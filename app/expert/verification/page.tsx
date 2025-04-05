@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
-import { getUserProfile } from "@/app/actions/user"
-import { getExpertProfile } from "@/app/actions/expert"
-import { getExpertVerificationStatus } from "@/app/actions/verification"
+import { getUserProfile, getExpertProfile, getExpertVerificationStatus } from "@/lib/user" // Adjust the import path as needed
+
 import { VerificationRequest } from "@/components/expert/verification-request"
 
 export default async function ExpertVerificationPage() {
@@ -39,5 +37,15 @@ export default async function ExpertVerificationPage() {
       </div>
     </div>
   )
+}
+async function getCurrentUser() {
+  // Simulate fetching the current user from a session or authentication context
+  const response = await fetch("/api/auth/session");
+  if (!response.ok) {
+    return null;
+  }
+
+  const session = await response.json();
+  return session?.user || null;
 }
 

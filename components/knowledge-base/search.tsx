@@ -3,12 +3,21 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
+
+// Define the KBArticle type
+interface KBArticle {
+  id: string
+  slug: string
+  title: string
+  excerpt?: string
+  content: string
+  category_name?: string
+  author_name: string
+}
 import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { SearchIcon, X } from "lucide-react"
-import { searchKnowledgeBase } from "@/app/actions/knowledge-base"
-import type { KBArticle } from "@/app/actions/knowledge-base"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -140,5 +149,25 @@ export function KnowledgeBaseSearch() {
       )}
     </div>
   )
+}
+
+async function searchKnowledgeBase(searchQuery: string): Promise<KBArticle[]> {
+  // Simulate an API call to fetch search results
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const mockResults: KBArticle[] = [
+        {
+          id: "1",
+          slug: "example-article",
+          title: "Example Article",
+          excerpt: "This is an example article.",
+          content: "Full content of the example article.",
+          category_name: "Category 1",
+          author_name: "Author 1",
+        },
+      ]
+      resolve(mockResults)
+    }, 1000)
+  })
 }
 

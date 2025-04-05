@@ -12,7 +12,6 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { format, isBefore, startOfDay } from "date-fns"
 import { toast } from "@/components/ui/use-toast"
-import { createBooking } from "@/app/actions/booking"
 
 interface BookingFormProps {
   expert: any
@@ -396,5 +395,37 @@ export function BookingForm({ expert, userId, availableSlots, services, packages
       </CardFooter>
     </Card>
   )
+}
+async function createBooking(bookingData: {
+  expert_id: any;
+  client_id: string;
+  start_time: any;
+  end_time: any;
+  service_id: string | null;
+  package_id: string | null;
+  subscription_id: string | null;
+  payment_type: string;
+  notes: string;
+  status: string;
+}): Promise<{ bookingId: any; error: any }> {
+  try {
+    const response = await fetch("/api/bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bookingData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { bookingId: null, error: errorData.message || "Failed to create booking" };
+    }
+
+    const data = await response.json();
+    return { bookingId: data.id, error: null };
+  } catch (error) {
+    return { bookingId: null, error: error instanceof Error ? error.message : "An unexpected error occurred" };
+  }
 }
 

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button"
 import { Clock } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import { purchasePackage } from "@/app/actions/packages"
+
 import { useToast } from "@/hooks/use-toast"
 import {
   Dialog,
@@ -150,5 +150,18 @@ export function ExpertPackages({ packages, expertName }: ExpertPackagesProps) {
       </div>
     </div>
   )
+}
+async function purchasePackage(formData: FormData) {
+  const response = await fetch("/api/purchase-package", {
+    method: "POST",
+    body: formData,
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || "Failed to purchase package")
+  }
+
+  return await response.json()
 }
 

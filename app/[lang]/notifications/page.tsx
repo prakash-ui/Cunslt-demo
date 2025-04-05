@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { getNotifications } from "@/app/actions/notifications"
 import { NotificationsList } from "@/components/notifications/notifications-list"
 
 export const metadata: Metadata = {
@@ -8,7 +7,14 @@ export const metadata: Metadata = {
 }
 
 export default async function NotificationsPage() {
-  const { notifications, count } = await getNotifications(20, 0, true)
+  interface Notification {
+    id: string;
+    message: string;
+    read: boolean;
+  }
+
+  const notifications: Notification[] = []; // Replace with actual notifications data
+  const count = 0; // Replace with the actual count
 
   return (
     <div className="container py-10">

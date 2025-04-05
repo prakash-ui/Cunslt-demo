@@ -9,7 +9,7 @@ import { StarRating } from "@/components/ui/star-rating"
 import { ReviewResponseForm } from "@/components/expert/review-response-form"
 import { getInitials } from "@/lib/utils"
 import { useEffect } from "react"
-import { getExpertReviewsWithResponses } from "@/app/actions/reviews"
+
 
 export default function ExpertReviewsPage() {
   const [reviews, setReviews] = useState<any[]>([])
@@ -113,5 +113,35 @@ export default function ExpertReviewsPage() {
       )}
     </div>
   )
+}
+async function getExpertReviewsWithResponses() {
+  // Simulating an API call to fetch reviews with responses
+  return [
+    {
+      id: "1",
+      user_name: "John Doe",
+      user_image: null,
+      created_at: "2023-10-01",
+      booking_date: "2023-09-30",
+      booking_time: "10:00 AM",
+      rating: 4,
+      comment: "Great consultation, very helpful!",
+      response: {
+        created_at: "2023-10-02",
+        response: "Thank you for your feedback, John!",
+      },
+    },
+    {
+      id: "2",
+      user_name: "Jane Smith",
+      user_image: null,
+      created_at: "2023-10-03",
+      booking_date: "2023-09-29",
+      booking_time: "2:00 PM",
+      rating: 5,
+      comment: "Amazing experience, highly recommend!",
+      response: null,
+    },
+  ]
 }
 

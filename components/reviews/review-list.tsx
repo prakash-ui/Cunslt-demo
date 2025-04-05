@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { getExpertReviews } from "@/app/actions/reviews"
+
 import { ReviewCard } from "./review-card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -184,5 +184,37 @@ export function ReviewList({
       )}
     </div>
   )
+}
+async function getExpertReviews(
+  expertId: string,
+  page: number,
+  limit: number,
+  sortBy: string,
+  sortOrder: string
+) {
+  try {
+    const response = await fetch(
+      `/api/reviews?expertId=${expertId}&page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch reviews: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return {
+      reviews: data.reviews || [],
+      pagination: {
+        total: data.total || 0,
+        page: data.page || 1,
+        limit: data.limit || 10,
+        totalPages: data.totalPages || 0,
+      },
+    };
+  } catch (error) {
+    console.error("Error in getExpertReviews:", error);
+    throw error;
+  }
 }
 

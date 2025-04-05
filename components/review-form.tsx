@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { StarRating } from "@/components/ui/star-rating"
-import { createReview } from "@/app/actions/reviews"
+
 import { toast } from "@/hooks/use-toast"
 
 interface ReviewFormProps {
@@ -71,10 +71,10 @@ export function ReviewForm({ bookingId, expertId, expertName }: ReviewFormProps)
           <CardTitle>Rate your consultation with {expertName}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
+            <div className="space-y-2">
             <label className="block text-sm font-medium">Rating</label>
-            <StarRating rating={rating} size="lg" interactive onRatingChange={setRating} />
-          </div>
+            <StarRating rating={rating} size="lg" onRatingChange={"setRating"} />
+            </div>
           <div className="space-y-2">
             <label htmlFor="comment" className="block text-sm font-medium">
               Comment (optional)
@@ -96,5 +96,18 @@ export function ReviewForm({ bookingId, expertId, expertName }: ReviewFormProps)
       </form>
     </Card>
   )
+}
+async function createReview(formData: FormData) {
+  const response = await fetch("/api/reviews", {
+    method: "POST",
+    body: formData,
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || "Failed to submit review")
+  }
+
+  return await response.json()
 }
 

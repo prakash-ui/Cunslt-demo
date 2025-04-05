@@ -3,7 +3,16 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, Briefcase, CreditCard, Users, Wrench } from "lucide-react"
-import type { KBCategory } from "@/app/actions/knowledge-base"
+
+
+// Define the KBCategory type
+interface KBCategory {
+  name: string
+  slug: string
+  icon?: keyof typeof iconMap
+  description: string
+  article_count: number
+}
 
 interface CategoryCardProps {
   category: KBCategory

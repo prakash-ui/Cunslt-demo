@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
 import { createClient } from "@/lib/supabase/server"
-import { approveExpert, rejectExpert } from "@/app/actions/admin"
 import { ExpertApprovalTable } from "@/components/admin/experts/expert-approval-table"
 
 export const metadata: Metadata = {
@@ -55,20 +53,54 @@ export default async function AdminExpertsPage() {
     experts?.map((expert) => ({
       id: expert.id,
       userId: expert.user_id,
-      name: expert.user_profiles.full_name,
-      email: expert.user_profiles.email,
+      name: "Prakash",
+      email: "prakash@gmail.com",
       title: expert.title,
       expertise: expert.expertise || [],
       hourlyRate: expert.hourly_rate,
       status: expert.status as "pending" | "approved" | "rejected",
       submittedAt: expert.created_at,
-      avatar: expert.user_profiles.avatar_url,
+      avatar:"url",
       bio: expert.bio || "",
       experience: expert.experience || "",
       education: expert.education || "",
       certifications: expert.certifications || [],
     })) || []
 
+  async function approveExpert(expertId: string, message?: string): Promise<void> {
+    const supabase = createClient()
+
+    // Update the expert's status to "approved"
+    const { error } = await supabase
+      .from("experts")
+      .update({ status: "approved", approval_message: message || null })
+      .eq("id", expertId)
+
+    if (error) {
+      console.error("Error approving expert:", error.message)
+      throw new Error("Failed to approve expert. Please try again.")
+    }
+
+    // Optionally, you could trigger a revalidation or refresh logic here
+    console.log(`Expert with ID ${expertId} approved successfully.`)
+  }
+  async function rejectExpert(expertId: string, reason: string): Promise<void> {
+    const supabase = createClient()
+
+    // Update the expert's status to "rejected" with a rejection reason
+    const { error } = await supabase
+      .from("experts")
+      .update({ status: "rejected", rejection_reason: reason })
+      .eq("id", expertId)
+
+    if (error) {
+      console.error("Error rejecting expert:", error.message)
+      throw new Error("Failed to reject expert. Please try again.")
+    }
+
+    // Optionally, you could trigger a revalidation or refresh logic here
+    console.log(`Expert with ID ${expertId} rejected successfully.`)
+  }
   return (
     <div className="container py-10">
       <div className="space-y-8">
@@ -81,5 +113,17 @@ export default async function AdminExpertsPage() {
       </div>
     </div>
   )
+}
+
+async function getCurrentUser() {
+  const supabase = createClient()
+  const { data: user, error } = await supabase.auth.getUser()
+
+  if (error) {
+    console.error("Error fetching current user:", error.message)
+    return null
+  }
+
+  return user
 }
 

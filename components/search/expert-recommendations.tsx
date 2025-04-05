@@ -7,9 +7,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { StarRating } from "@/components/ui/star-rating"
 import { Skeleton } from "@/components/ui/skeleton"
-import { getExpertRecommendations } from "@/app/actions/search"
+
 import { useToast } from "@/hooks/use-toast"
 import { formatCurrency } from "@/lib/utils"
+import { getExpertRecommendations } from "@/lib/api" // Adjust the path as needed
 
 export function ExpertRecommendations() {
   const { toast } = useToast()

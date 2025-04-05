@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { getUserSearchHistory } from "@/app/actions/search"
+
 import { useToast } from "@/hooks/use-toast"
 import { Clock, Search } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
@@ -19,7 +19,7 @@ export function SearchHistory({ onSearchSelect }: SearchHistoryProps) {
   useEffect(() => {
     const fetchSearchHistory = async () => {
       try {
-        const history = await getUserSearchHistory()
+        const history = await fetch('/api/search-history').then((res) => res.json())
         setSearchHistory(history)
       } catch (error) {
         console.error("Error fetching search history:", error)

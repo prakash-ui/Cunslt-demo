@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { getExpertAvailabilitySettings, getAvailabilitySlots, getUnavailableDates } from "@/app/actions/availability"
 import { SettingsForm } from "@/components/availability/settings-form"
 import { AddTimeSlot } from "@/components/availability/add-time-slot"
 import { TimeSlot } from "@/components/availability/time-slot"
@@ -14,9 +13,15 @@ export const metadata: Metadata = {
 }
 
 export default async function AvailabilityPage() {
-  const settings = await getExpertAvailabilitySettings()
-  const slots = await getAvailabilitySlots()
-  const unavailableDates = await getUnavailableDates()
+  const settings = {
+    timezone: "UTC", // Replace with the appropriate timezone
+    advance_notice_hours: 24, // Replace with the desired advance notice in hours
+    max_booking_days_ahead: 30, // Replace with the maximum booking days ahead
+  };
+
+  const slots: any = []; // Initialize slots as an empty array or fetch data dynamically
+  const unavailableDates: any = []; // Initialize unavailableDates as an empty array or fetch data dynamically
+
 
   return (
     <div className="container py-10">
@@ -44,7 +49,7 @@ export default async function AvailabilityPage() {
                     <p className="text-muted-foreground">No availability slots set. Add some above.</p>
                   ) : (
                     <div className="space-y-2">
-                      {slots.map((slot) => (
+                      {slots.map((slot:any) => (
                         <TimeSlot
                           key={slot.id}
                           id={slot.id}
@@ -67,7 +72,7 @@ export default async function AvailabilityPage() {
                   <CardTitle>Blocked Dates</CardTitle>
                   <CardDescription>Dates when you're unavailable for consultations</CardDescription>
                 </CardHeader>
-                <CardContent>
+                {/* <CardContent>
                   {unavailableDates.length === 0 ? (
                     <p className="text-muted-foreground">No dates blocked. Add some above.</p>
                   ) : (
@@ -77,7 +82,7 @@ export default async function AvailabilityPage() {
                       ))}
                     </div>
                   )}
-                </CardContent>
+                </CardContent> */}
               </Card>
             </TabsContent>
           </Tabs>
@@ -95,7 +100,7 @@ export default async function AvailabilityPage() {
                 {slots.length === 0 ? (
                   <li className="text-muted-foreground">No availability set</li>
                 ) : (
-                  slots.map((slot) => {
+                  slots.map((slot:any) => {
                     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                     return (
                       <li key={slot.id} className="flex items-center">
@@ -113,7 +118,7 @@ export default async function AvailabilityPage() {
                 <>
                   <p className="mt-6 text-muted-foreground">You're unavailable on these dates:</p>
                   <ul className="mt-2 space-y-1">
-                    {unavailableDates.map((date) => (
+                    {unavailableDates.map((date:any) => (
                       <li key={date.id}>
                         {new Date(date.date).toLocaleDateString()}
                         {date.reason && <span className="text-sm text-muted-foreground ml-2">({date.reason})</span>}

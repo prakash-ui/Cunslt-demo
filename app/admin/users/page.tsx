@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
 import { createClient } from "@/lib/supabase/server"
-import { updateUserStatus, updateUserRole, sendUserEmail } from "@/app/actions/admin"
 import { UserTable } from "@/components/admin/users/user-table"
 
 export const metadata: Metadata = {
@@ -44,6 +42,65 @@ export default async function AdminUsersPage() {
       avatar: user.avatar_url,
     })) || []
 
+  async function updateUserStatus(userId: string, status: "active" | "inactive" | "suspended" | "pending"): Promise<void> {
+    const supabase = createClient()
+
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({ status })
+      .eq("id", userId)
+
+    if (error) {
+      console.error("Failed to update user status:", error.message)
+      throw new Error("Failed to update user status")
+    }
+  }
+  async function updateUserRole(userId: string, role: "client" | "expert" | "admin"): Promise<void> {
+    const supabase = createClient()
+
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({ role })
+      .eq("id", userId)
+
+    if (error) {
+      console.error("Failed to update user role:", error.message)
+      throw new Error("Failed to update user role")
+    }
+  }
+  async function sendUserEmail(userId: string, subject: string, message: string): Promise<void> {
+    const supabase = createClient()
+
+    // Fetch the user's email address
+    const { data: user, error: fetchError } = await supabase
+      .from("user_profiles")
+      .select("email")
+      .eq("id", userId)
+      .single()
+
+    if (fetchError || !user) {
+      console.error("Failed to fetch user email:", fetchError?.message)
+      throw new Error("Failed to fetch user email")
+    }
+
+    // Send the email using a server-side email service or API
+    const response = await fetch("/api/send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: user.email,
+        subject,
+        message,
+      }),
+    })
+
+    if (!response.ok) {
+      console.error("Failed to send email:", await response.text())
+      throw new Error("Failed to send email")
+    }
+  }
   return (
     <div className="container py-10">
       <div className="space-y-8">
@@ -61,5 +118,20 @@ export default async function AdminUsersPage() {
       </div>
     </div>
   )
+}
+async function getCurrentUser() {
+  const supabase = createClient()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session || !session.user) {
+    return null
+  }
+
+  return {
+    id: session.user.id,
+    email: session.user.email,
+  }
 }
 

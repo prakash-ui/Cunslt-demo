@@ -1,13 +1,13 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
+
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { InstallmentPlan } from "@/components/payment/installment-plan"
-import { getPaymentPlan } from "@/app/actions/installments"
+
 
 interface BookingPaymentPageProps {
   params: {
@@ -58,7 +58,7 @@ export default async function BookingPaymentPage({ params }: BookingPaymentPageP
   }
 
   // Get payment plan if exists
-  const paymentPlan = await getPaymentPlan(params.id)
+  // const paymentPlan = await getPaymentPlan(params.id)
 
   return (
     <div className="container py-10">
@@ -119,9 +119,32 @@ export default async function BookingPaymentPage({ params }: BookingPaymentPageP
           </CardContent>
         </Card>
 
-        <InstallmentPlan bookingId={params.id} totalAmount={booking.amount} paymentPlan={paymentPlan} />
+        {/* <InstallmentPlan bookingId={params.id} totalAmount={booking.amount} paymentPlan={paymentPlan} /> */}
       </div>
     </div>
   )
+}
+async function getCurrentUser() {
+  const supabase = createClient()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session?.user) {
+    return null
+  }
+
+  const { data: user, error } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .single()
+
+  if (error) {
+    console.error("Error fetching user profile:", error)
+    return null
+  }
+
+  return user
 }
 

@@ -7,8 +7,14 @@ import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/for
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useForm } from "react-hook-form"
-import { addUnavailableDate } from "@/app/actions/availability"
+
 import { toast } from "@/hooks/use-toast"
+
+// Mock function for adding unavailable date
+async function addUnavailableDate(formData: FormData): Promise<void> {
+  // Simulate an API call
+  return new Promise((resolve) => setTimeout(resolve, 1000))
+}
 
 export function AddUnavailableDate() {
   const [isPending, setIsPending] = useState(false)

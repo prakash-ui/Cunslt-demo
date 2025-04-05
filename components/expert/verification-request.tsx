@@ -6,9 +6,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { FileUpload } from "@/components/ui/file-upload"
-import { submitVerificationRequest, uploadVerificationDocument } from "@/app/actions/verification"
+
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, CheckCircle, AlertCircle, Upload } from "lucide-react"
+
+// Mock function for submitting verification requests
+async function submitVerificationRequest(expertId: string): Promise<{ status: string; id: string }> {
+  // Replace this with actual API call logic
+  return new Promise((resolve) =>
+    setTimeout(() => resolve({ status: "new", id: "verification-id-123" }), 1000),
+  )
+}
 
 interface VerificationRequestProps {
   expertId: string
@@ -123,13 +131,13 @@ export function VerificationRequest({ expertId, verificationStatus }: Verificati
             <div className="space-y-4">
               <FileUpload
                 endpoint="/api/upload"
-                onClientUploadComplete={(res) => {
+                onUploadComplete={(res) => {
                   toast({
                     title: "Upload complete",
                     description: "Your document has been uploaded successfully.",
                   })
                 }}
-                onUploadError={(error) => {
+                onError={(error) => {
                   toast({
                     title: "Upload error",
                     description: error.message,
@@ -291,5 +299,16 @@ export function VerificationRequest({ expertId, verificationStatus }: Verificati
       </CardFooter>
     </Card>
   )
+}
+async function uploadVerificationDocument(formData: FormData): Promise<void> {
+  const response = await fetch("/api/upload-verification-document", {
+    method: "POST",
+    body: formData,
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || "Failed to upload verification document")
+  }
 }
 

@@ -143,7 +143,7 @@ import {
   type LucideProps,
 } from "lucide-react";
 
-// For any icons that still can't be found, create custom fallbacks
+
 const FallbackIcon = ({ ...props }: LucideProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

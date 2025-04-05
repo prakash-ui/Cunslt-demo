@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import { getExpertMetrics } from "@/app/actions/analytics"
 import { ExpertOverviewCard } from "@/components/analytics/expert/overview-card"
 import { ExpertEarningsChart } from "@/components/analytics/expert/earnings-chart"
 import { ExpertBookingsChart } from "@/components/analytics/expert/bookings-chart"
@@ -28,19 +27,27 @@ export default async function ExpertAnalytics() {
     redirect("/dashboard")
   }
 
-  const metrics = await getExpertMetrics("month")
 
-  if ("error" in metrics) {
-    return (
-      <div className="container mx-auto py-10">
-        <h1 className="text-3xl font-bold mb-6">Expert Analytics</h1>
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">{metrics.error}</div>
-      </div>
-    )
-  }
+  // Fetch metrics data
+    const { data: metrics, error: metricsError } = await supabase
+      .from("metrics")
+      .select("*")
+      .eq("expert_id", expert.id)
+      .single()
+  
+    if (metricsError || !metrics) {
+      return (
+        <div className="container mx-auto py-10">
+          <h1 className="text-3xl font-bold mb-6">Expert Analytics</h1>
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            {metricsError ? metricsError.message : "Metrics data not found"}
+          </div>
+        </div>
+      )
+    }
 
   // Get booking history from the returned metrics
-  const bookingHistory = metrics.bookingHistory.map((booking) => ({
+  const bookingHistory = metrics.bookingHistory.map((booking:any) => ({
     id: booking.id,
     status: booking.status as any,
     price: booking.price || 0,
@@ -59,8 +66,8 @@ export default async function ExpertAnalytics() {
 
   const earningsData = last30Days.map((day) => {
     const dayStr = format(day, "yyyy-MM-dd")
-    const dayBookings = metrics.bookingHistory.filter((b) => b.completedAt && b.completedAt.startsWith(dayStr))
-    const dailyEarnings = dayBookings.reduce((sum, b) => sum + (b.price || 0), 0)
+    const dayBookings = metrics.bookingHistory.filter((b:any) => b.completedAt && b.completedAt.startsWith(dayStr))
+    const dailyEarnings = dayBookings.reduce((sum:any, b:any) => sum + (b.price || 0), 0)
 
     return {
       date: format(day, "MMM dd"),
@@ -72,11 +79,11 @@ export default async function ExpertAnalytics() {
   const bookingsData = last30Days.map((day) => {
     const dayStr = format(day, "yyyy-MM-dd")
     const completedBookings = metrics.bookingHistory.filter(
-      (b) => b.completedAt && b.completedAt.startsWith(dayStr),
+      (b:any) => b.completedAt && b.completedAt.startsWith(dayStr),
     ).length
 
     const canceledBookings = metrics.bookingHistory.filter(
-      (b) => b.canceledAt && b.canceledAt.startsWith(dayStr),
+      (b:any) => b.canceledAt && b.canceledAt.startsWith(dayStr),
     ).length
 
     return {

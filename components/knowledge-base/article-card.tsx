@@ -1,7 +1,17 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import type { KBArticle } from "@/app/actions/knowledge-base"
+interface KBArticle {
+  slug: string;
+  title: string;
+  is_featured: boolean;
+  excerpt?: string;
+  content: string;
+  category_name?: string;
+  tags?: string[];
+  author_name: string;
+  created_at: string;
+}
 import { formatDistanceToNow } from "date-fns"
 
 interface ArticleCardProps {

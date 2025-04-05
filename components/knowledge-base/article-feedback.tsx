@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { ThumbsUp, ThumbsDown } from "lucide-react"
-// import { submitArticleFeedback } from "@/app/actions/knowledge-base"
+
 import { toast } from "@/components/ui/use-toast"
 
 interface ArticleFeedbackProps {

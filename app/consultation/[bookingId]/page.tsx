@@ -1,7 +1,6 @@
 import { Suspense } from "react"
 import { notFound, redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { getCurrentUser } from "@/app/actions/auth"
 import { checkConsultationAccess, getVideoToken, createVideoRoom } from "@/lib/video-service"
 import VideoRoom from "@/components/consultation/video-room"
 import ConsultationFiles from "@/components/consultation/consultation-files"
@@ -125,7 +124,7 @@ async function ConsultationContent({ bookingId }: { bookingId: string }) {
           </CardContent>
         </Card>
 
-        <ConsultationFiles bookingId={bookingId} />
+        {/* <ConsultationFiles bookingId={bookingId} /> */}
       </div>
     </div>
   )
@@ -147,5 +146,27 @@ export default function ConsultationPage({ params }: ConsultationPageProps) {
       </Suspense>
     </div>
   )
+}
+async function getCurrentUser() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session || !session.user) {
+    return null;
+  }
+
+  const { data: user, error } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .single();
+
+  if (error || !user) {
+    return null;
+  }
+
+  return user;
 }
 

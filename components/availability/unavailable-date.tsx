@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatDate } from "@/lib/utils"
 import { Trash2 } from "lucide-react"
-import { deleteUnavailableDate } from "@/app/actions/availability"
+
+// Mock function for deleting unavailable dates
+async function deleteUnavailableDate(formData: FormData): Promise<void> {
+  console.log("Deleting unavailable date with data:", formData);
+  // Add your API call or logic here
+}
+
 
 interface UnavailableDateProps {
   id: string

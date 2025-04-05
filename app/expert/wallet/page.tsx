@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
+
 import { createClient } from "@/lib/supabase/server"
 import { WalletDashboard } from "@/components/expert/wallet-dashboard"
-import { getExpertWallet, getWalletTransactions, getWithdrawalRequests } from "@/app/actions/wallet"
+
 
 export default async function WalletPage() {
   const user = await getCurrentUser()
@@ -23,6 +23,20 @@ export default async function WalletPage() {
   try {
     const wallet = await getExpertWallet()
     const transactions = await getWalletTransactions(20)
+// Function to fetch withdrawal requests
+async function getWithdrawalRequests() {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("withdrawal_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error("Failed to fetch withdrawal requests: " + error.message);
+  }
+
+  return data;
+}
     const withdrawalRequests = await getWithdrawalRequests()
 
     return (
@@ -41,5 +55,44 @@ export default async function WalletPage() {
       </div>
     )
   }
+}
+async function getCurrentUser() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session && session.user) {
+    return session.user;
+  }
+
+  return null;
+}
+async function getExpertWallet() {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("wallets")
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error("Failed to fetch expert wallet: " + error.message);
+  }
+
+  return data;
+}
+async function getWalletTransactions(limit: number) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    throw new Error("Failed to fetch wallet transactions: " + error.message);
+  }
+
+  return data;
 }
 

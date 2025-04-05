@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { getKBCategoryBySlug, getKBArticles } from "@/app/actions/knowledge-base"
+
 import { ArticleCard } from "@/components/knowledge-base/article-card"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
@@ -27,6 +27,19 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   }
 }
 
+// Define the KBArticle interface
+interface KBArticle {
+  id: number
+  title: string
+  categoryId: number
+  published: boolean
+  slug: string
+  is_featured: boolean
+  content: string
+  author_name: string
+  created_at: string
+}
+
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const category = await getKBCategoryBySlug(params.slug)
 
@@ -37,7 +50,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const articles = await getKBArticles({
     categoryId: category.id,
     published: true,
-  })
+  }) as KBArticle[]
 
   return (
     <div className="container py-8">
@@ -70,5 +83,29 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       )}
     </div>
   )
+}
+async function getKBCategoryBySlug(slug: string) {
+  // Simulate fetching category data from a database or API
+  const categories = [
+    { id: 1, slug: "technology", name: "Technology", description: "Articles about technology." },
+    { id: 2, slug: "health", name: "Health", description: "Articles about health and wellness." },
+    { id: 3, slug: "finance", name: "Finance", description: "Articles about financial topics." },
+  ]
+
+  // Find the category by slug
+  return categories.find((category) => category.slug === slug) || null
+}
+async function getKBArticles({ categoryId, published }: { categoryId: number; published: boolean }) {
+  // Simulate fetching articles from a database or API
+  const articles = [
+    { id: 1, title: "The Future of AI", categoryId: 1, published: true, slug: "future-of-ai", is_featured: false, content: "Content about AI", author_name: "John Doe", created_at: "2023-01-01" },
+    { id: 2, title: "Understanding Cloud Computing", categoryId: 1, published: true, slug: "cloud-computing", is_featured: false, content: "Content about Cloud Computing", author_name: "Jane Smith", created_at: "2023-02-01" },
+    { id: 3, title: "10 Tips for Healthy Living", categoryId: 2, published: true, slug: "healthy-living", is_featured: false, content: "Content about Healthy Living", author_name: "Alice Johnson", created_at: "2023-03-01" },
+    { id: 4, title: "Investing for Beginners", categoryId: 3, published: true, slug: "investing-beginners", is_featured: false, content: "Content about Investing", author_name: "Bob Brown", created_at: "2023-04-01" },
+    { id: 5, title: "The Rise of Quantum Computing", categoryId: 1, published: false, slug: "quantum-computing", is_featured: false, content: "Content about Quantum Computing", author_name: "Charlie Davis", created_at: "2023-05-01" },
+  ]
+
+  // Filter articles by categoryId and published status
+  return articles.filter(article => article.categoryId === categoryId && article.published === published)
 }
 

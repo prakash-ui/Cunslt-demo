@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createReview, updateReview } from "@/app/actions/reviews"
+
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { StarRating } from "./star-rating"
@@ -122,5 +122,47 @@ export function ReviewForm({ consultationId, existingReview, onSuccess }: Review
       </Button>
     </form>
   )
+}
+async function updateReview(id: string, formData: ReviewFormData) {
+  try {
+    const response = await fetch(`/api/reviews/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { error: errorData.message || "Failed to update review" };
+    }
+
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    return { error: "An unexpected error occurred while updating the review" };
+  }
+}
+async function createReview(formData: ReviewFormData) {
+  try {
+    const response = await fetch(`/api/reviews`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { error: errorData.message || "Failed to create review" };
+    }
+
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    return { error: "An unexpected error occurred while creating the review" };
+  }
 }
 

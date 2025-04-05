@@ -14,10 +14,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { getSavedSearches, saveSearch, deleteSavedSearch } from "@/app/actions/search"
+
 import { useToast } from "@/hooks/use-toast"
 import { BookmarkPlus, Trash2 } from "lucide-react"
-import type { SearchFilters } from "@/app/actions/search"
+
+
+interface SearchFilters {
+  categories?: string[]
+  minRating?: number
+  minPrice?: number
+  maxPrice?: number
+  languages?: string[]
+  availability?: string[]
+  experienceLevel?: string[]
+  sortBy?: string
+}
 
 interface SavedSearchesProps {
   currentQuery: string
@@ -36,7 +47,7 @@ export function SavedSearches({ currentQuery, currentFilters, onSearchSelect }: 
   useEffect(() => {
     const fetchSavedSearches = async () => {
       try {
-        const searches = await getSavedSearches()
+        const searches = await fetchSavedSearches() // Ensure this function is defined and returns the saved searches
         setSavedSearches(searches)
       } catch (error) {
         console.error("Error fetching saved searches:", error)
@@ -234,5 +245,16 @@ export function SavedSearches({ currentQuery, currentFilters, onSearchSelect }: 
       </CardContent>
     </Card>
   )
+}
+async function deleteSavedSearch(id: string) {
+  const response = await fetch(`/api/saved-searches/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete the saved search");
+  }
+
+  return await response.json();
 }
 

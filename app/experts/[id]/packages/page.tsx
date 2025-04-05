@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
-import { getExpertPackages } from "@/app/actions/packages"
+
 import { ExpertPackages } from "@/components/packages/expert-packages"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
+import { getExpertPackages } from "@/lib/expert-packages" // Adjust the path as needed
+
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -22,9 +23,7 @@ export async function generateMetadata({ params }: ExpertPackagesPageProps): Pro
     .select(`
       id,
       title,
-      user_profiles (
-        full_name
-      )
+      user_profiles
     `)
     .eq("id", params.id)
     .single()
@@ -37,7 +36,7 @@ export async function generateMetadata({ params }: ExpertPackagesPageProps): Pro
   }
 
   return {
-    title: `${expert.user_profiles.full_name}'s Packages | Cunslt`,
+    title: `${expert.user_profiles?.full_name || "Expert"}'s Packages | Cunslt`,
     description: `Consultation packages offered by ${expert.user_profiles.full_name}`,
   }
 }
@@ -51,7 +50,7 @@ export default async function ExpertPackagesPage({ params }: ExpertPackagesPageP
     .select(`
       id,
       title,
-      user_profiles (
+      user_profiles!inner (
         full_name
       )
     `)
@@ -75,14 +74,32 @@ export default async function ExpertPackagesPage({ params }: ExpertPackagesPageP
                 Back to Expert Profile
               </Link>
             </Button>
-            <h1 className="text-3xl font-bold tracking-tight">{expert.user_profiles.full_name}'s Packages</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{expert.user_profiles[0]?.full_name}'s Packages</h1>
             <p className="text-muted-foreground">Choose a consultation package to save on multiple sessions</p>
           </div>
         </div>
 
-        <ExpertPackages packages={packages} expertName={expert.user_profiles.full_name} />
+        <ExpertPackages packages={packages} expertName={expert.user_profiles[0]?.full_name} />
       </div>
     </div>
   )
+}
+async function getCurrentUser() {
+  const supabase = createClient()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session) {
+    return null
+  }
+
+  const { data: user } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .single()
+
+  return user
 }
 

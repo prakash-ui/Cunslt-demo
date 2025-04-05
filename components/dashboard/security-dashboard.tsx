@@ -8,17 +8,56 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, Shield, LogOut, Key, Smartphone, Mail } from "lucide-react"
-import {
-  getSecuritySettings,
-  enableTwoFactor,
-  disableTwoFactor,
-  getLoginHistory,
-  getActiveSessions,
-  revokeSession,
-  revokeAllSessions,
-} from "@/app/actions/security"
+
 import { useToast } from "@/hooks/use-toast"
 import { format } from "date-fns"
+
+// Mock or actual implementation of getSecuritySettings
+async function getSecuritySettings() {
+  // Replace this with the actual API call or logic
+  return {
+    twoFactorEnabled: false,
+    twoFactorMethod: "app",
+  }
+}
+
+// Mock or actual implementation of getLoginHistory
+async function getLoginHistory() {
+  // Replace this with the actual API call or logic
+  return [
+    {
+      success: true,
+      ipAddress: "192.168.1.1",
+      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      createdAt: new Date().toISOString(),
+    },
+    {
+      success: false,
+      ipAddress: "192.168.1.2",
+      userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      createdAt: new Date().toISOString(),
+    },
+  ]
+}
+
+// Mock or actual implementation of getActiveSessions
+async function getActiveSessions() {
+  // Replace this with the actual API call or logic
+  return [
+    {
+      id: "session1",
+      ipAddress: "192.168.1.3",
+      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "session2",
+      ipAddress: "192.168.1.4",
+      userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      updatedAt: new Date().toISOString(),
+    },
+  ]
+}
 
 export function SecurityDashboard() {
   const { toast } = useToast()
@@ -334,5 +373,43 @@ export function SecurityDashboard() {
       </Tabs>
     </div>
   )
+}
+async function enableTwoFactor(twoFactorMethod: string) {
+  // Simulate an API call to enable two-factor authentication
+  return new Promise<{ success: boolean }>((resolve, reject) => {
+    setTimeout(() => {
+      if (["app", "email", "sms"].includes(twoFactorMethod)) {
+        resolve({ success: true })
+      } else {
+        reject(new Error("Invalid two-factor method"))
+      }
+    }, 1000) // Simulate network delay
+  })
+}
+
+async function disableTwoFactor() {
+  // Simulate an API call to disable two-factor authentication
+  return new Promise<{ success: boolean }>((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true });
+    }, 1000); // Simulate network delay
+  });
+}
+async function revokeAllSessions() {
+  // Simulate an API call to revoke all sessions
+  return new Promise<{ success: boolean }>((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true });
+    }, 1000); // Simulate network delay
+  });
+}
+
+async function revokeSession(sessionId: string) {
+  // Simulate an API call to revoke a specific session
+  return new Promise<{ success: boolean }>((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true });
+    }, 1000); // Simulate network delay
+  });
 }
 

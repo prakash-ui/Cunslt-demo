@@ -3,9 +3,27 @@
 import { useRef, useEffect } from "react"
 import { formatRelative } from "date-fns"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import type { Message } from "@/app/actions/messaging"
+
 import { cn } from "@/lib/utils"
 import { FileIcon, FileTextIcon, ImageIcon } from "lucide-react"
+
+// Define the Message interface
+interface Message {
+  id: string
+  content: string
+  created_at: string
+  sender_id: string
+  sender?: {
+    avatar_url?: string
+    full_name?: string
+  }
+  attachments?: {
+    id: string
+    file_name: string
+    file_url: string
+    file_type: string
+  }[]
+}
 
 interface MessageListProps {
   messages: Message[]

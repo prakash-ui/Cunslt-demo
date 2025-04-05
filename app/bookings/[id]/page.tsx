@@ -1,6 +1,5 @@
 import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
-import { getCurrentUser } from "@/app/actions/auth"
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -331,5 +330,27 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
       </div>
     </div>
   )
+}
+async function getCurrentUser() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session || !session.user) {
+    return null;
+  }
+
+  const { data: user, error } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .single();
+
+  if (error || !user) {
+    return null;
+  }
+
+  return user;
 }
 

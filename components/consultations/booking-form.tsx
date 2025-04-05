@@ -8,7 +8,7 @@ import { useLanguage } from "@/i18n/language-provider"
 import { useCurrency } from "@/context/currency-provider"
 import { useTimezone } from "@/context/timezone-provider"
 import { TimezoneSelector } from "@/components/timezone-selector"
-import { createConsultation } from "@/app/actions/consultations"
+
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
@@ -231,5 +231,47 @@ export function BookingForm({ expertId, expertName, hourlyRate, currency = "USD"
       </CardContent>
     </Card>
   )
+}
+async function createConsultation({
+  expert_id,
+  start_time,
+  duration,
+  topic,
+  description,
+  timezone,
+}: {
+  expert_id: string
+  start_time: string
+  duration: number
+  topic: string
+  description: string
+  timezone: string
+}) {
+  try {
+    const response = await fetch("/api/consultations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        expert_id,
+        start_time,
+        duration,
+        topic,
+        description,
+        timezone,
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      return { error: errorData.message || "Failed to create consultation" }
+    }
+
+    const data = await response.json()
+    return { consultation: data }
+  } catch (error) {
+    return { error: "An unexpected error occurred" }
+  }
 }
 

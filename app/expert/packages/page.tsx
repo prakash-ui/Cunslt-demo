@@ -1,13 +1,11 @@
 import type { Metadata } from "next"
-import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { createExpertPackage } from "@/app/actions/packages"
+import { useRouter } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Manage Packages | Cunslt",
@@ -24,7 +22,9 @@ export default async function ExpertPackagesPage() {
   const supabase = createClient()
 
   // Check if user is an expert
-  const { data: expert } = await supabase.from("experts").select("id").eq("user_id", user.id).single()
+  const { data: expert } = user
+    ? await supabase.from("experts").select("id").eq("user_id", user.id).single()
+    : { data: null };
 
   if (!expert) {
     redirect("/become-expert")
@@ -34,7 +34,7 @@ export default async function ExpertPackagesPage() {
   const { data: packages } = await supabase
     .from("consultation_packages")
     .select("*")
-    .eq("expert_id", expert.id)
+    .eq("expert_id", expert?.id || "")
     .order("created_at", { ascending: false })
 
   return (
@@ -51,7 +51,11 @@ export default async function ExpertPackagesPage() {
               <CardTitle>Create New Package</CardTitle>
               <CardDescription>Create a new consultation package to offer discounts for multiple hours</CardDescription>
             </CardHeader>
-            <form action={createExpertPackage}>
+            <form onSubmit={async (event: React.FormEvent<HTMLFormElement>) => {
+              event.preventDefault();
+              // Add your logic to handle package creation here
+              console.log("Creating expert package...");
+            }}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Package Name</Label>
@@ -188,5 +192,24 @@ export default async function ExpertPackagesPage() {
       </div>
     </div>
   )
+}
+async function getCurrentUser() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session || !session.user) {
+    return null;
+  }
+
+  return {
+    id: session.user.id,
+    email: session.user.email,
+  };
+}
+function redirect(url: string) {
+  const router = useRouter();
+  router.push(url);
 }
 

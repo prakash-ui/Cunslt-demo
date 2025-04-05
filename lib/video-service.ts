@@ -1,7 +1,6 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
-import { getCurrentUser } from "@/app/actions/auth"
 
 // Daily.co API key would be stored in environment variables
 const DAILY_API_KEY = process.env.DAILY_API_KEY
@@ -163,4 +162,21 @@ export async function checkConsultationAccess(bookingId: string) {
     return { authorized: false, message: "Error checking access" }
   }
 }
+
+async function getCurrentUser() {
+  const supabase = createClient()
+  const { data: { session }, error } = await supabase.auth.getSession()
+
+  if (error) {
+    console.error("Error fetching session:", error)
+    throw new Error("Unable to fetch user session")
+  }
+
+  if (!session || !session.user) {
+    return null
+  }
+
+  return session.user
+}
+
 

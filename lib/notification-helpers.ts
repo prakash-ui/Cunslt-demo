@@ -1,4 +1,25 @@
-import { createNotification, type NotificationData } from "@/app/actions/notifications"
+
+
+// Define the NotificationData interface
+interface NotificationData {
+  expert_name?: string;
+  booking_date?: string;
+  amount?: string;
+  service?: string;
+  sender_name?: string;
+  alert_message?: string;
+  update_message?: string;
+}
+
+// Mock implementation of createNotification function
+async function createNotification(
+  userId: string,
+  type: string,
+  data: NotificationData,
+  link?: string
+): Promise<void> {
+  console.log(`Notification sent to ${userId} with type ${type}, data:`, data, `and link: ${link}`);
+}
 
 // Helper function to send a booking notification
 export async function sendBookingNotification(

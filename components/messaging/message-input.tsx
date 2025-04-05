@@ -8,12 +8,25 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { sendMessage, type MessageTemplate } from "@/app/actions/messaging"
+
 import { PaperclipIcon, SendIcon, SmileIcon, SaveIcon, LayoutTemplateIcon as TemplateIcon } from "lucide-react"
 import data from "@emoji-mart/data"
 import Picker from "@emoji-mart/react"
 import { useTheme } from "next-themes"
 import { toast } from "@/components/ui/use-toast"
+
+// Mock implementation of sendMessage function
+async function sendMessage(conversationId: string, message: string, userId: string, files: File[]) {
+  // Replace this with your actual implementation
+  console.log("Sending message:", { conversationId, message, userId, files });
+}
+
+// Define the MessageTemplate type
+interface MessageTemplate {
+  id: string
+  title: string
+  content: string
+}
 
 interface MessageInputProps {
   conversationId: string

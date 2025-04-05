@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { getClientMetrics } from "@/app/actions/analytics"
+
 import { ClientOverviewCard } from "@/components/analytics/client/overview-card"
 import { ClientSpendingChart } from "@/components/analytics/client/spending-chart"
 import { BookingHistoryList } from "@/components/analytics/booking-history"
@@ -20,7 +20,7 @@ export default async function ClientAnalytics() {
     return (
       <div className="container mx-auto py-10">
         <h1 className="text-3xl font-bold mb-6">My Analytics</h1>
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">{metrics.error}</div>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">{String(metrics.error)}</div>
       </div>
     )
   }
@@ -32,8 +32,8 @@ export default async function ClientAnalytics() {
     price: booking.price || 0,
     createdAt: booking.createdAt,
     scheduledAt: booking.scheduledAt || booking.createdAt,
-    completedAt: booking.completedAt,
-    canceledAt: booking.canceledAt,
+    completedAt: booking.completedAt || undefined,
+    canceledAt: booking.canceledAt || undefined,
     clientName: booking.expertName,
     clientImage: booking.expertImage,
   }))
@@ -150,5 +150,64 @@ export default async function ClientAnalytics() {
       </div>
     </div>
   )
+}
+async function getClientMetrics(timeframe: string) {
+  // Simulate fetching client metrics from an API or database
+  const mockData = {
+    calculatedMetrics: {
+      totalBookings: 120,
+      completedBookings: 100,
+      canceledBookings: 20,
+      totalSpent: 5000,
+      uniqueExperts: 15,
+      activeSubscriptions: 2,
+      activePackages: 3,
+    },
+    bookingHistory: [
+      {
+        id: "1",
+        status: "completed",
+        price: 100,
+        createdAt: "2023-09-01T10:00:00Z",
+        scheduledAt: "2023-09-02T10:00:00Z",
+        completedAt: "2023-09-02T12:00:00Z",
+        canceledAt: null,
+        expertName: "John Doe",
+        expertImage: "/images/john-doe.jpg",
+      },
+      {
+        id: "2",
+        status: "canceled",
+        price: 200,
+        createdAt: "2023-09-03T10:00:00Z",
+        scheduledAt: "2023-09-04T10:00:00Z",
+        completedAt: null,
+        canceledAt: "2023-09-04T09:00:00Z",
+        expertName: "Jane Smith",
+        expertImage: "/images/jane-smith.jpg",
+      },
+    ],
+    subscriptions: [
+      {
+        id: "sub1",
+        status: "active",
+        currentPeriodEnd: "2023-12-31T23:59:59Z",
+      },
+    ],
+    packages: [
+      {
+        id: "pkg1",
+        status: "active",
+        hoursRemaining: 10,
+        expiresAt: "2023-11-30T23:59:59Z",
+      },
+    ],
+  };
+
+  // Simulate a delay to mimic an API call
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // Return mock data
+  return mockData;
 }
 

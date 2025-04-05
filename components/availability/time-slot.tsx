@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatTime } from "@/lib/utils"
 import { Trash2 } from "lucide-react"
-import { deleteAvailabilitySlot } from "@/app/actions/availability"
+
 
 interface TimeSlotProps {
   id: string
@@ -29,7 +29,7 @@ export function TimeSlot({ id, dayOfWeek, startTime, endTime, isRecurring }: Tim
         <div>
           <p className="font-medium">{dayNames[dayOfWeek]}</p>
           <p className="text-sm text-muted-foreground">
-            {formatTime(startTime)} - {formatTime(endTime)}
+            {formatTime(new Date(`2000-01-01T${startTime}`).getTime())} - {formatTime(new Date(`2000-01-01T${endTime}`).getTime())}
           </p>
           {isRecurring && <p className="text-xs text-muted-foreground">Recurring weekly</p>}
         </div>
@@ -40,5 +40,22 @@ export function TimeSlot({ id, dayOfWeek, startTime, endTime, isRecurring }: Tim
       </CardContent>
     </Card>
   )
+}
+async function deleteAvailabilitySlot(formData: FormData) {
+  try {
+    const response = await fetch("/api/availability/delete-slot", {
+      method: "POST",
+      body: formData,
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete time slot: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error("Error deleting time slot:", error)
+    throw error
+  }
 }
 

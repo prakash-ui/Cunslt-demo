@@ -7,7 +7,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useForm } from "react-hook-form"
-import { updateAvailabilitySettings } from "@/app/actions/availability"
+
 import { toast } from "@/hooks/use-toast"
 
 interface SettingsFormProps {
@@ -124,5 +124,18 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
       </CardContent>
     </Card>
   )
+}
+async function updateAvailabilitySettings(formData: FormData) {
+  const response = await fetch("/api/availability/settings", {
+    method: "POST",
+    body: formData,
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || "Failed to update availability settings")
+  }
+
+  return await response.json()
 }
 

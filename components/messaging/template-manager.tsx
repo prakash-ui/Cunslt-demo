@@ -8,13 +8,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
-import {
-  createMessageTemplate,
-  updateMessageTemplate,
-  deleteMessageTemplate,
-  type MessageTemplate,
-} from "@/app/actions/messaging"
+
 import { MoreHorizontal, Plus, Pencil, Trash2 } from "lucide-react"
+
+// Define the MessageTemplate interface
+interface MessageTemplate {
+  id: string
+  title: string
+  content: string
+}
 
 interface TemplateManagerProps {
   userId: string
@@ -53,6 +55,22 @@ export function TemplateManager({ userId, templates }: TemplateManagerProps) {
     if (!currentTemplate || !title.trim() || !content.trim()) return
 
     try {
+// Function to update a message template
+async function updateMessageTemplate(templateId: string, title: string, content: string, userId: string) {
+  const response = await fetch(`/api/templates/${templateId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title, content, userId }),
+  })
+
+  if (!response.ok) {
+    throw new Error("Failed to update message template")
+  }
+
+  return await response.json()
+}
       await updateMessageTemplate(currentTemplate.id, title, content, userId)
       setCurrentTemplate(null)
       setTitle("")
@@ -220,5 +238,36 @@ export function TemplateManager({ userId, templates }: TemplateManagerProps) {
       </Dialog>
     </div>
   )
+}
+async function createMessageTemplate(title: string, content: string, userId: string) {
+  const response = await fetch(`/api/templates`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title, content, userId }),
+  })
+
+  if (!response.ok) {
+    throw new Error("Failed to create message template")
+  }
+
+  return await response.json()
+}
+
+async function deleteMessageTemplate(templateId: string, userId: string) {
+  const response = await fetch(`/api/templates/${templateId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userId }),
+  })
+
+  if (!response.ok) {
+    throw new Error("Failed to delete message template")
+  }
+
+  return await response.json()
 }
 

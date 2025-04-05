@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { getMessageTemplates } from "@/app/actions/messaging"
-import { TemplateManager } from "@/components/messaging/template-manager"
+
 
 export default async function TemplatesPage() {
   const supabase = createClient()

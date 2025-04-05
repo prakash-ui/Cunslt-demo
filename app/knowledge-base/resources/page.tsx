@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getExpertResources } from "@/app/actions/knowledge-base"
+
 import { ResourceCard } from "@/components/knowledge-base/resource-card"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
@@ -44,5 +44,16 @@ export default async function ResourcesPage() {
       )}
     </div>
   )
+}
+async function getExpertResources({ publicOnly }: { publicOnly: boolean }) {
+  // Simulating a database or API call to fetch resources
+  const allResources = [
+    { id: "1", title: "Resource 1", public: true, file_url: "/files/resource1.pdf", download_count: 120, created_at: "2023-01-01" },
+    { id: "2", title: "Resource 2", public: false, file_url: "/files/resource2.pdf", download_count: 80, created_at: "2023-02-01" },
+    { id: "3", title: "Resource 3", public: true, file_url: "/files/resource3.pdf", download_count: 200, created_at: "2023-03-01" },
+  ]
+
+  // Filter resources based on the publicOnly flag
+  return allResources.filter((resource) => (publicOnly ? resource.public : true))
 }
 

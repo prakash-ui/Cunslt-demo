@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server"
-import { getCurrentUser } from "@/app/actions/auth"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
@@ -58,5 +57,17 @@ export async function POST(request: NextRequest) {
     console.error("Error starting consultation:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
+}
+async function getCurrentUser() {
+  const supabase = createClient()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session || !session.user) {
+    return null
+  }
+
+  return session.user
 }
 

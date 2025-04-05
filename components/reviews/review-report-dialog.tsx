@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { reportReview } from "@/app/actions/reviews"
+
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
@@ -104,5 +104,25 @@ export function ReviewReportDialog({ reviewId, open, onOpenChange }: ReviewRepor
       </DialogContent>
     </Dialog>
   )
+}
+async function reportReview({ review_id, reason }: { review_id: string; reason: string }) {
+  try {
+    const response = await fetch("/api/report-review", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ review_id, reason }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      return { error: errorData.message || "Failed to report review" }
+    }
+
+    return { success: true }
+  } catch (error) {
+    return { error: "An unexpected error occurred while reporting the review" }
+  }
 }
 

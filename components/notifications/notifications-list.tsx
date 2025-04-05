@@ -1,15 +1,21 @@
 "use client"
 
 import { useState } from "react"
+
+// Mock or import the getNotifications function
+async function getNotifications(limit: number, offset: number, includeRead: boolean) {
+  // Replace this mock implementation with the actual API call
+  return {
+    notifications: [
+      { id: 1, title: "Sample Notification", body: "This is a sample notification.", is_read: false, type: "message_received", timeAgo: "2h ago", link: "/details" },
+    ],
+    count: 1,
+  }
+}
 import { Check, Archive, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  getNotifications,
-  markNotificationAsRead,
-  markAllNotificationsAsRead,
-  archiveNotification,
-} from "@/app/actions/notifications"
+
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -226,7 +232,7 @@ export function NotificationsList({ initialNotifications, initialCount }: Notifi
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <div className="flex items-center space-x-2">
-                            <h4 className="text-sm font-medium font-semibold">{notification.title}</h4>
+                            <h4 className="text-sm font-semibold">{notification.title}</h4>
                             <Badge variant="outline" className={getNotificationBadgeColor(notification.type)}>
                               {getNotificationTypeDisplay(notification.type)}
                             </Badge>
@@ -288,5 +294,54 @@ export function NotificationsList({ initialNotifications, initialCount }: Notifi
       </CardFooter>
     </Card>
   )
+}
+async function markNotificationAsRead(id: number) {
+  try {
+    const response = await fetch(`/api/notifications/${id}/mark-as-read`, {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to mark notification as read: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error marking notification as read:", error);
+    throw error;
+  }
+}
+
+async function markAllNotificationsAsRead() {
+  try {
+    const response = await fetch(`/api/notifications/mark-all-as-read`, {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to mark all notifications as read: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error marking all notifications as read:", error);
+    throw error;
+  }
+}
+async function archiveNotification(id: number) {
+  try {
+    const response = await fetch(`/api/notifications/${id}/archive`, {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to archive notification: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error archiving notification:", error);
+    throw error;
+  }
 }
 

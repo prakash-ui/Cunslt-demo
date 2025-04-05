@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button"
 import { Check, Info } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import { subscribeToplan } from "@/app/actions/subscription"
+
 import { useToast } from "@/hooks/use-toast"
 import {
   Dialog,
@@ -59,7 +59,16 @@ export function SubscriptionPlans({ plans, currentSubscription }: SubscriptionPl
       const formData = new FormData()
       formData.append("planId", plan.id)
 
-      await subscribeToplan(formData)
+      // Define or import the subscribeToplan function
+      const subscribeToplan = async (formData: FormData) => {
+        // Replace this with the actual API call logic
+        return fetch("/api/subscribe", {
+          method: "POST",
+          body: formData,
+        });
+      };
+
+      await subscribeToplan(formData);
     } catch (error) {
       toast({
         title: "Error",

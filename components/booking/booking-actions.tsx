@@ -17,7 +17,6 @@ import { Calendar } from "@/components/ui/calendar"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { rescheduleBooking, cancelBooking } from "@/app/actions/bookings"
 import { useToast } from "@/hooks/use-toast"
 import { AlertTriangle } from "lucide-react"
 import { format, addDays, isAfter } from "date-fns"
@@ -251,5 +250,31 @@ export function BookingActions({ booking, userRole, availableTimeSlots = [] }: B
       </Dialog>
     </div>
   )
+}
+async function rescheduleBooking(formData: FormData) {
+  const response = await fetch("/api/bookings/reschedule", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to reschedule booking");
+  }
+
+  return await response.json();
+}
+async function cancelBooking(formData: FormData) {
+  const response = await fetch("/api/bookings/cancel", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to cancel booking");
+  }
+
+  return await response.json();
 }
 

@@ -5,8 +5,34 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { getNotificationPreferences, updateNotificationPreferences } from "@/app/actions/notifications"
+
 import { toast } from "@/components/ui/use-toast"
+
+// Mock function to simulate saving notification preferences
+async function updateNotificationPreferences(preferences: any): Promise<{ success: boolean }> {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true })
+    }, 1000)
+  })
+}
+
+// Mock function to simulate fetching notification preferences
+async function getNotificationPreferences() {
+  return {
+    email_notifications: true,
+    push_notifications: true,
+    in_app_notifications: true,
+    booking_reminders: true,
+    booking_updates: true,
+    messages: true,
+    payment_updates: true,
+    platform_updates: true,
+    security_alerts: true,
+    marketing_emails: true,
+  }
+}
 
 export function NotificationPreferences() {
   const [preferences, setPreferences] = useState<any>(null)

@@ -4,8 +4,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Download, FileText, FileIcon as FilePdf, FileImage, FileArchive } from "lucide-react"
-import { type ExpertResource, incrementResourceDownloadCount } from "@/app/actions/knowledge-base"
 import { formatDistanceToNow } from "date-fns"
+
+interface ExpertResource {
+  id: string
+  title: string
+  description?: string
+  file_type?: string
+  file_url: string
+  download_count: number
+  expert_name?: string
+  created_at: string
+}
 
 interface ResourceCardProps {
   resource: ExpertResource
@@ -60,5 +70,9 @@ export function ResourceCard({ resource, showExpert = true }: ResourceCardProps)
       </CardFooter>
     </Card>
   )
+}
+
+function incrementResourceDownloadCount(id: string) {
+  throw new Error("Function not implemented.")
 }
 

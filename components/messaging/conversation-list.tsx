@@ -7,9 +7,25 @@ import { formatDistanceToNow } from "date-fns"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type { Conversation } from "@/app/actions/messaging"
+
 import { cn } from "@/lib/utils"
 import { Search } from "lucide-react"
+
+interface Conversation {
+  id: string
+  client?: {
+    full_name: string
+    avatar_url?: string
+  }
+  expert?: {
+    profiles?: {
+      full_name: string
+      avatar_url?: string
+    }
+  }
+  last_message_at: string
+  unread_count?: number
+}
 
 interface ConversationListProps {
   conversations: Conversation[]

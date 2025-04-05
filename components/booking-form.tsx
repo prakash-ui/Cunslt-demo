@@ -9,8 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createBooking } from "@/app/actions/bookings"
-import { getExpertAvailability } from "@/app/actions/availability"
+
 import { formatTime } from "@/lib/utils"
 
 interface BookingFormProps {
@@ -43,7 +42,13 @@ export function BookingForm({ expertId, hourlyRate }: BookingFormProps) {
         setAvailableSlots(slots)
 
         // Reset start time if previously selected time is no longer available
-        if (startTime && !slots.some((slot) => slot.start_time <= startTime && slot.end_time > startTime)) {
+        if (
+          startTime &&
+          !slots.some(
+            (slot: { start_time: string; end_time: string }) =>
+              slot.start_time <= startTime && slot.end_time > startTime
+          )
+        ) {
           setStartTime("")
         }
       } catch (error) {
@@ -88,7 +93,7 @@ export function BookingForm({ expertId, hourlyRate }: BookingFormProps) {
         const timeString = start.toTimeString().substring(0, 5)
         options.push({
           value: timeString,
-          label: formatTime(timeString),
+          label: formatTime(new Date(`2000-01-01T${timeString}`).getTime()),
         })
 
         // Add 30 minutes
@@ -188,5 +193,37 @@ export function BookingForm({ expertId, hourlyRate }: BookingFormProps) {
       </CardContent>
     </Card>
   )
+}
+async function getExpertAvailability(expertId: string, date: string) {
+  try {
+    const response = await fetch(`/api/experts/${expertId}/availability?date=${date}`)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch availability: ${response.statusText}`)
+    }
+    const data = await response.json()
+    return data.slots || []
+  } catch (error) {
+    console.error("Error fetching expert availability:", error)
+    return []
+  }
+}
+async function createBooking(formData: FormData) {
+  try {
+    const response = await fetch("/api/bookings", {
+      method: "POST",
+      body: formData,
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to create booking: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    console.log("Booking created successfully:", data)
+    alert("Booking created successfully!")
+  } catch (error) {
+    console.error("Error creating booking:", error)
+    alert("Failed to create booking. Please try again.")
+  }
 }
 

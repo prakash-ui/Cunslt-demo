@@ -7,7 +7,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { useForm } from "react-hook-form"
-import { addAvailabilitySlot } from "@/app/actions/availability"
+
 import { toast } from "@/hooks/use-toast"
 import { DaySelector } from "./day-selector"
 
@@ -120,5 +120,18 @@ export function AddTimeSlot() {
       </CardContent>
     </Card>
   )
+}
+async function addAvailabilitySlot(formData: FormData) {
+  const response = await fetch("/api/availability", {
+    method: "POST",
+    body: formData,
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || "Failed to add availability slot")
+  }
+
+  return await response.json()
 }
 

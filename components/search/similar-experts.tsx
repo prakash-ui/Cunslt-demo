@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { getSimilarExperts } from "@/lib/api" // Adjust the import path based on your project structure
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { StarRating } from "@/components/ui/star-rating"
 import { Skeleton } from "@/components/ui/skeleton"
-import { getSimilarExperts } from "@/app/actions/search"
+
 import { useToast } from "@/hooks/use-toast"
 import { formatCurrency } from "@/lib/utils"
 

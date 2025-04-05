@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import type { File } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { formatFileSize, getFileExtension } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -11,7 +10,7 @@ import { toast } from "@/components/ui/use-toast"
 
 interface ConsultationFilesProps {
   consultationId: string
-  files: File[]
+  files: { id: string; name: string; size: number; url: string }[]
   canUpload?: boolean
   onUpload?: () => void
 }
@@ -74,9 +73,9 @@ export default function ConsultationFiles({
       case "jpeg":
       case "png":
       case "gif":
-        return <Icons.image className="h-5 w-5 text-purple-500" />
+        return <Icons.fileCheck className="h-5 w-5 text-orange-500" />
       default:
-        return <Icons.file className="h-5 w-5" />
+        return <Icons.fileCheck className="h-5 w-5 text-orange-500" />
     }
   }
 
@@ -105,7 +104,7 @@ export default function ConsultationFiles({
 
       {files.length === 0 ? (
         <div className="rounded-md border border-dashed p-6 text-center">
-          <Icons.file className="mx-auto h-8 w-8 text-muted-foreground" />
+          <div className="mx-auto h-8 w-8 text-muted-foreground" />
           <p className="mt-2 text-sm text-muted-foreground">No files have been uploaded yet.</p>
         </div>
       ) : (

@@ -5,7 +5,7 @@ import { useMessages } from "@/hooks/use-messages"
 import { Message } from "@/components/messaging/message"
 import { MessageInput } from "@/components/messaging/message-input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { markConversationAsRead } from "@/app/actions/messages"
+
 
 interface ConversationProps {
   conversationId: string
@@ -58,8 +58,25 @@ export function Conversation({ conversationId, initialMessages }: ConversationPr
         <div ref={messagesEndRef} />
       </div>
 
-      <MessageInput conversationId={conversationId} />
+      <MessageInput 
+        conversationId={conversationId} 
+        userId="currentUserId" 
+        onSendMessage={(message:any) => console.log("Message sent:", message)} 
+      />
     </>
   )
+}
+async function markConversationAsRead(conversationId: string) {
+  try {
+    const response = await fetch(`/api/conversations/${conversationId}/read`, {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to mark conversation ${conversationId} as read:`, response.statusText);
+    }
+  } catch (error) {
+    console.error(`Error marking conversation ${conversationId} as read:`, error);
+  }
 }
 

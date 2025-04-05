@@ -3,9 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LanguagePreferences } from "@/components/settings/language-preferences"
 import { CurrencyPreferences } from "@/components/settings/currency-preferences"
 import { TimezonePreferences } from "@/components/settings/timezone-preferences"
-import { getCurrentUser } from "@/app/actions/auth"
 import { getDictionary } from "@/i18n/dictionaries"
 import { redirect } from "next/navigation"
+import { getSession } from "next-auth/react"
 
 export async function generateMetadata({ params }: { params: { lang: string } }) {
   const dictionary = await getDictionary(params.lang as any)
@@ -78,5 +78,12 @@ export default async function PreferencesPage({ params }: {params: { lang: strin
       <PreferencesContent dictionary={dictionary} />
     </div>
   )
+}
+async function getCurrentUser() {
+  const session = await getSession()
+  if (session && session.user) {
+    return session.user
+  }
+  return null
 }
 

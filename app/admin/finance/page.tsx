@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
+
 import { createClient } from "@/lib/supabase/server"
-import { getRevenueChartData, exportFinancialReport } from "@/app/actions/admin"
+
 import { FinancialReports } from "@/components/admin/finance/financial-reports"
 
 export const metadata: Metadata = {
@@ -44,5 +44,46 @@ export default async function AdminFinancePage() {
       <FinancialReports revenueData={revenueData} categoryData={categoryData} onExport={exportFinancialReport} />
     </div>
   )
+}
+
+// Function to handle exporting financial reports
+async function exportFinancialReport(format: "csv" | "excel", period: string): Promise<void> {
+  console.log(`Exporting financial report in ${format} format for period: ${period}`);
+  // Add logic to export the financial report here
+  return Promise.resolve(); // Placeholder for async logic
+}
+async function getCurrentUser() {
+  const supabase = createClient()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session || !session.user) {
+    return null
+  }
+
+  return session.user
+}
+async function getRevenueChartData() {
+  const supabase = createClient()
+
+  // Fetch revenue data from the database
+  const { data, error } = await supabase
+    .from("revenue")
+    .select("date, amount")
+    .order("date", { ascending: true })
+
+  if (error) {
+    console.error("Error fetching revenue data:", error)
+    return []
+  }
+
+  // Transform the data into a format suitable for charting
+  return data?.map((entry) => ({
+    month: new Date(entry.date).toLocaleString("default", { month: "long" }),
+    revenue: entry.amount,
+    platformFees: entry.amount * 0.1, // Example calculation for platform fees
+    expertPayouts: entry.amount * 0.9, // Example calculation for expert payouts
+  })) || []
 }
 

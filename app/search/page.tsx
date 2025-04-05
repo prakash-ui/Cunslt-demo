@@ -11,10 +11,37 @@ import { SearchResults } from "@/components/search/search-results"
 import { SavedSearches } from "@/components/search/saved-searches"
 import { SearchHistory } from "@/components/search/search-history"
 import { ExpertRecommendations } from "@/components/search/expert-recommendations"
-import { searchExperts, type SearchFilters as SearchFiltersType } from "@/app/actions/search"
+
 import { useToast } from "@/hooks/use-toast"
+
+// Define or import SearchFiltersType
+type SearchFiltersType = {
+  categories?: string[];
+  minRating?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  languages?: string[];
+  availability?: string[];
+  experienceLevel?: string[];
+  location?: string;
+  sortBy?: string;
+};
 import { SearchIcon, X } from "lucide-react"
 import { debounce } from "lodash"
+
+// Mock or actual implementation of searchExperts function
+async function searchExperts(searchQuery: string, searchFilters: SearchFiltersType, page: number) {
+  // Replace this mock implementation with actual API call logic
+  return {
+    experts: [], // Replace with fetched experts
+    pagination: {
+      page,
+      pageSize: 10,
+      totalCount: 0,
+      totalPages: 1,
+    },
+  }
+}
 
 export default function SearchPage() {
   const router = useRouter()

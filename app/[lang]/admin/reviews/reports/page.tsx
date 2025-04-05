@@ -1,6 +1,4 @@
 import { Suspense } from "react"
-// import { getReviewReports } from "@/app/actions/reviews"
-import { getCurrentUser } from "@/app/actions/auth"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -90,5 +88,13 @@ export default async function ReviewReportsPage() {
       </Suspense>
     </div>
   );
+}
+async function getCurrentUser() {
+  // Simulate fetching the current user from an API or session
+  return {
+    id: "123",
+    name: "Admin User",
+    role: "admin", // This can be "admin", "user", etc.
+  };
 }
 

@@ -1,15 +1,25 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getExpertResources } from "@/app/actions/knowledge-base"
 import { ResourceCard } from "@/components/knowledge-base/resource-card"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { getCurrentUser } from "@/lib/session"
 import { redirect } from "next/navigation"
+import { getExpertResources } from "@/lib/resources" // Adjusted to use absolute path alias
 
 export const metadata: Metadata = {
   title: "Manage Resources | Expert Dashboard",
   description: "Manage your shared resources and materials",
+}
+
+// Define the ExpertResource type
+type ExpertResource = {
+  id: string
+  title: string
+  file_url: string
+  download_count: number
+  created_at: string
+  [key: string]: any // Allow additional properties
 }
 
 export default async function ExpertResourcesPage() {
@@ -19,7 +29,14 @@ export default async function ExpertResourcesPage() {
     redirect("/login")
   }
 
-  const resources = await getExpertResources({ expertId: user.id })
+  const resources: Array<ExpertResource> = (await getExpertResources({ expertId: user.id })).map((resource) => ({
+    id: resource.id,
+    title: resource.title || "Untitled",
+    file_url: resource.file_url || "",
+    download_count: resource.download_count || 0,
+    created_at: resource.created_at || new Date().toISOString(),
+    ...resource,
+  }))
 
   return (
     <div className="space-y-6">

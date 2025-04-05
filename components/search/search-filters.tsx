@@ -10,9 +10,21 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { Separator } from "@/components/ui/separator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { getExpertCategories } from "@/app/actions/search"
-import type { SearchFilters as SearchFilterType } from "@/app/actions/search"
+
 import { Filter, X } from "lucide-react"
+
+// Define the SearchFilterType interface
+interface SearchFilterType {
+  categories?: string[]
+  minRating?: number
+  minPrice?: number
+  maxPrice?: number
+  languages?: string[]
+  availability?: string[]
+  experienceLevel?: string[]
+  location?: string
+  sortBy?: "relevance" | "rating" | "price_low" | "price_high" | "availability"
+}
 
 interface SearchFiltersProps {
   initialFilters?: SearchFilterType
@@ -462,5 +474,34 @@ export function SearchFilters({ initialFilters, onFiltersChange, className }: Se
       </Card>
     </>
   )
+}
+async function getExpertCategories() {
+  // Simulate fetching categories from an API or database
+  return [
+    {
+      id: "1",
+      name: "Technology",
+      children: [
+        { id: "1-1", name: "Web Development" },
+        { id: "1-2", name: "Data Science" },
+      ],
+    },
+    {
+      id: "2",
+      name: "Business",
+      children: [
+        { id: "2-1", name: "Marketing" },
+        { id: "2-2", name: "Finance" },
+      ],
+    },
+    {
+      id: "3",
+      name: "Creative Arts",
+      children: [
+        { id: "3-1", name: "Graphic Design" },
+        { id: "3-2", name: "Photography" },
+      ],
+    },
+  ]
 }
 

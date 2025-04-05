@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { getBookingHistory } from "@/app/actions/bookings"
 import { useToast } from "@/hooks/use-toast"
 import { formatDate } from "@/lib/utils"
 import { Clock, Calendar, ArrowRight, RotateCcw, XCircle, CheckCircle } from "lucide-react"
@@ -20,8 +19,8 @@ export function BookingHistory({ bookingId }: BookingHistoryProps) {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const historyData = await getBookingHistory(bookingId)
-        setHistory(historyData)
+        // const historyData = await getBookingHistory(bookingId)
+        // setHistory(historyData)
       } catch (error) {
         toast({
           title: "Error",

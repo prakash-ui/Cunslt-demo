@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Progress } from "@/components/ui/progress"
 import { StarRating } from "./star-rating"
-import { getExpertReviewStats } from "@/app/actions/reviews"
+
 import type { ReviewStats } from "@/app/types/reviews"
 
 interface ReviewStatsProps {
@@ -80,5 +80,18 @@ export function ReviewStatsComponent({ expertId, initialStats }: ReviewStatsProp
       </div>
     </div>
   )
+}
+async function getExpertReviewStats(expertId: string) {
+  try {
+    const response = await fetch(`/api/experts/${expertId}/review-stats`)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch review stats: ${response.statusText}`)
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error in getExpertReviewStats:", error)
+    throw error
+  }
 }
 

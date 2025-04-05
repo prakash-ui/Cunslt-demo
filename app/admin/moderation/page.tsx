@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/app/actions/auth"
 import { createClient } from "@/lib/supabase/server"
-import { approveContent, removeContent, warnUser } from "@/app/actions/admin"
 import { ContentModeration } from "@/components/admin/moderation/content-moderation"
 
 export const metadata: Metadata = {
@@ -94,5 +92,20 @@ export default async function AdminModerationPage() {
       </div>
     </div>
   )
+}
+async function getCurrentUser() {
+  const supabase = createClient()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session || !session.user) {
+    return null
+  }
+
+  return {
+    id: session.user.id,
+    email: session.user.email,
+  }
 }
 

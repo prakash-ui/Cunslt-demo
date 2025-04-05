@@ -1,14 +1,17 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { getConversations, getConversation, getMessages, getMessageTemplates } from "@/app/actions/messaging"
+
 import { ConversationList } from "@/components/messaging/conversation-list"
 import { MessageList } from "@/components/messaging/message-list"
 import { MessageInput } from "@/components/messaging/message-input"
 import { Button } from "@/components/ui/button"
+import { getConversations } from "../../../lib/supabase/conversations"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getMessages } from "../../../lib/supabase/messages"
+import { getConversation } from "../../../lib/supabase/conversations"
 import { ArrowLeft, MoreVertical } from "lucide-react"
 import Link from "next/link"
-import { createMessageTemplate } from "@/app/actions/message-template"
+
 
 interface ConversationPageProps {
   params: {

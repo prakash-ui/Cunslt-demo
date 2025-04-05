@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { getConversations } from "@/app/actions/messaging"
+import { getConversations } from "@/lib/conversations" // Adjust the path as needed
+
 import { ConversationList } from "@/components/messaging/conversation-list"
 import { EmptyState } from "@/components/empty-state"
 import { MessageCircle } from "lucide-react"
@@ -39,27 +40,26 @@ export default async function MessagesPage() {
     <div className="container mx-auto py-6 h-[calc(100vh-4rem)]">
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-full gap-6">
         <div className="md:col-span-1 border rounded-lg overflow-hidden h-[calc(100vh-8rem)]">
-          {conversations && conversations.length > 0 ? (
+            {conversations && conversations.length > 0 ? (
             <ConversationList conversations={conversations} userRole={profile.role} />
-          ) : (
+            ) : (
             <EmptyState
               icon={<MessageCircle className="h-10 w-10" />}
               title="No conversations yet"
               description={
-                profile.role === "client"
-                  ? "Start a conversation with an expert to get help."
-                  : "You don't have any client conversations yet."
+              profile.role === "client"
+                ? "Start a conversation with an expert to get help."
+                : "You don't have any client conversations yet."
               }
               action={
-                profile.role === "client"
-                  ? {
-                      label: "Find Experts",
-                      href: "/experts",
-                    }
-                  : undefined
+              profile.role === "client" ? (
+                <a href="/experts" className="text-primary hover:underline">
+                Find Experts
+                </a>
+              ) : undefined
               }
             />
-          )}
+            )}
         </div>
 
         <div className="md:col-span-2 lg:col-span-3 border rounded-lg flex items-center justify-center p-6">

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { getKBArticleBySlug, incrementArticleViewCount } from "@/app/actions/knowledge-base"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
@@ -85,7 +85,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <Mdx content={article.content} />
           </div>
 
-          <ArticleFeedback articleId={article.id} />
+          <ArticleFeedback articleId={article.id.toString()} />
 
           <div className="mt-12 border-t pt-6">
             <h2 className="mb-4 text-xl font-semibold">Related Resources</h2>
@@ -111,5 +111,51 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </div>
     </div>
   )
+}
+async function getKBArticleBySlug(slug: string) {
+  // Simulate fetching article data from a database or API
+  const articles = [
+    {
+      id: 1,
+      slug: "example-article",
+      title: "Example Article",
+      excerpt: "This is an example article.",
+      content: "This is the full content of the example article.",
+      author_name: "John Doe",
+      created_at: "2023-01-01T00:00:00Z",
+      is_featured: true,
+      category_id: 1,
+      category_name: "General",
+      tags: ["example", "article"],
+    },
+    {
+      id: 2,
+      slug: "another-article",
+      title: "Another Article",
+      excerpt: "This is another article.",
+      content: "This is the full content of another article.",
+      author_name: "Jane Smith",
+      created_at: "2023-02-01T00:00:00Z",
+      is_featured: false,
+      category_id: 2,
+      category_name: "Tutorials",
+      tags: ["tutorial", "guide"],
+    },
+  ]
+
+  // Find the article by slug
+  const article = articles.find((article) => article.slug === slug)
+
+  // Return the article or null if not found
+  return article || null
+}
+async function incrementArticleViewCount(id: number) {
+  try {
+    // Simulate an API call to increment the view count for the article
+    console.log(`Incrementing view count for article with ID: ${id}`);
+    // Example: await fetch(`/api/articles/${id}/increment-view`, { method: "POST" });
+  } catch (error) {
+    console.error(`Failed to increment view count for article with ID: ${id}`, error);
+  }
 }
 

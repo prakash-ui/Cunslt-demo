@@ -1,4 +1,4 @@
-// import { getExpertReviews, getExpertReviewStats } from "@/app/actions/reviews"
+
 import { ReviewStatsComponent } from "@/components/reviews/review-stats"
 import { ReviewList } from "@/components/reviews/review-list"
 

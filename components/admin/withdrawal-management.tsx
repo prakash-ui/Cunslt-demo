@@ -18,7 +18,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { formatCurrency } from "@/lib/utils"
-import { processWithdrawal } from "@/app/actions/wallet"
 import { useToast } from "@/hooks/use-toast"
 import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
@@ -82,7 +81,19 @@ export function WithdrawalManagement({ withdrawalRequests }: WithdrawalManagemen
       formData.append("paymentReference", paymentReference)
       formData.append("notes", notes)
 
-      await processWithdrawal(formData)
+            await processWithdrawal(formData)
+      
+      async function processWithdrawal(formData: FormData): Promise<void> {
+        // Example implementation of the processWithdrawal function
+        const response = await fetch("/api/withdrawals/process", {
+          method: "POST",
+          body: formData,
+        });
+      
+        if (!response.ok) {
+          throw new Error("Failed to process withdrawal");
+        }
+      }
     } catch (error) {
       toast({
         title: "Error",
