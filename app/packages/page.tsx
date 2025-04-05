@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import { getClientPackages } from "../actions/packages"
+
 import { ClientPackages } from "@/components/packages/client-packages"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "../actions/auth"
+
 
 export const metadata: Metadata = {
   title: "My Packages | Cunslt",

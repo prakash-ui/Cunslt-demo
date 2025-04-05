@@ -9,8 +9,9 @@ import { StarRating } from "@/components/ui/star-rating"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { useToast } from "@/hooks/use-toast"
-import { formatCurrency } from "@/lib/utils"
-import { getExpertRecommendations } from "@/lib/api" // Adjust the path as needed
+// import { formatCurrency } from "@/lib/utils"
+// Adjust the path as needed
+ // Adjust the path as needed
 
 export function ExpertRecommendations() {
   const { toast } = useToast()
@@ -68,6 +69,12 @@ export function ExpertRecommendations() {
     return null
   }
 
+  function formatCurrency(hourly_rate: number): string {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(hourly_rate);
+  }
   return (
     <Card>
       <CardHeader>

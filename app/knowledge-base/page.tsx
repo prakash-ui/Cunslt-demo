@@ -1,25 +1,37 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next";
 
-import { CategoryCard } from "@/components/knowledge-base/category-card"
-import { ArticleCard } from "@/components/knowledge-base/article-card"
-import { Button } from "@/components/ui/button"
-import { Search } from "lucide-react"
-import Link from "next/link"
+import { CategoryCard } from "@/components/knowledge-base/category-card";
+import { ArticleCard } from "@/components/knowledge-base/article-card";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
+import Link from "next/link";
 
-
+// Optionally import these if you have them
+// import { getKBCategories, getKBArticles } from "@/lib/your-api"
 
 export const metadata: Metadata = {
   title: "Knowledge Base | Cunslt",
-  description: "Browse articles, guides, and resources to help you get the most out of the platform",
-}
+  description:
+    "Browse articles, guides, and resources to help you get the most out of the platform",
+};
 
-// export default async function KnowledgeBasePage() {
-//   const categories = await getKBCategories()
-//   const featuredArticles = await getKBArticles({
-//     featured: true,
-//     limit: 3,
-//     published: true,
-//   })
+export default async function KnowledgeBasePage() {
+  // You can uncomment these if the functions exist
+  // const categories = await getKBCategories();
+  // const featuredArticles = await getKBArticles({
+  //   featured: true,
+  //   limit: 3,
+  //   published: true,
+  // });
+
+  // Temporary placeholder data so it doesn't crash
+  const categories = [
+    { id: 1, name: "Getting Started" },
+    { id: 2, name: "Account Settings" },
+    { id: 3, name: "Troubleshooting" },
+  ];
+
+  const featuredArticles = [];
 
   return (
     <div className="container py-8">
@@ -37,18 +49,17 @@ export const metadata: Metadata = {
           </Link>
         </div>
       </div>
-{/* 
+
       {featuredArticles.length > 0 && (
         <div className="mb-12">
           <h2 className="mb-6 text-2xl font-semibold">Featured Articles</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {featuredArticles.map((article) => (
               <ArticleCard key={article.id} article={article} />
-                  ))}
-                </div>
-              </div>
-            )}
-      {/* */}
+            ))}
+          </div>
+        </div>
+      )}
 
       <h2 className="mb-6 text-2xl font-semibold">Browse by Category</h2>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -59,7 +70,9 @@ export const metadata: Metadata = {
 
       <div className="mt-12 rounded-lg border bg-muted/50 p-6 text-center">
         <h2 className="mb-2 text-xl font-semibold">Can't find what you're looking for?</h2>
-        <p className="mb-4 text-muted-foreground">Browse our expert resources or contact support for assistance</p>
+        <p className="mb-4 text-muted-foreground">
+          Browse our expert resources or contact support for assistance
+        </p>
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
           <Link href="/knowledge-base/resources">
             <Button variant="outline">Browse Expert Resources</Button>
@@ -70,6 +83,5 @@ export const metadata: Metadata = {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

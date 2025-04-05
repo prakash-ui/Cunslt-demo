@@ -1,4 +1,4 @@
-'use client';
+
 
 import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { useRouter } from "next/navigation";
+
 
 export const metadata: Metadata = {
   title: "Manage Packages | Cunslt",
@@ -210,8 +210,12 @@ async function getCurrentUser() {
     email: session.user.email,
   };
 }
+
 function redirect(url: string) {
-  const router = useRouter();
-  router.push(url);
+  if (typeof window !== "undefined") {
+    window.location.href = url;
+  } else {
+    throw new Error("Redirect can only be used in a browser environment.");
+  }
 }
 

@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import { getCurrentSubscription, getSubscriptionPlans } from "../actions/subscription"
+
 import { SubscriptionPlans } from "@/components/subscription/subscription-plans"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "../actions/auth"
+
 
 export const metadata: Metadata = {
   title: "Subscription Plans | Cunslt",
